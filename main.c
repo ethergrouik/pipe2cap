@@ -4,16 +4,16 @@ void usage( void ){
 
     printf( "\nUsage: 'data_stream' | app network_adapter_id\n" );
     printf( "=======\n");
-    printf( "Forward remote sniffed frames to a local network adapter using pcap.\n\n");
+    printf( "Transfers remote sniffed frames to a local network adapter using pcap.\n\n");
     printf("How to:\n");
     printf("=======\n");
     printf("- Add a MS loopback adapter to your Windows box ( let's image that its id will be '1' );\n");
     printf("- Disable all network properties of this new adapter;\n");
-    printf("- Install winpcap again in order to add this new adapter to the pcap interfaces list;\n");
+    printf("- Reinstall winpcap or reboot your computer in order to add this new adapter to the pcap interface list;\n");
     printf("- Connect to your linux remote box like this:\n\n");
     printf("plink.exe -ssh -pw password login@192.168.1.1 \"tcpdump -n -s 0 -i eth0 -w - not port ssh\" | c:\\users\\user\\Downloads\\pipe2cap.exe 1\n\n");
     printf("=> it will forward frames captured by tcpdump on 192.168.1.1 (except ssh) to your local MS loopback adapter identified by its id ( 1 ).\n\n");
-    printf("- Start your favorites tools and listen to your MS loopback adapter.\n\n");
+    printf("- Start your favorite tools and listen to your MS loopback adapter.\n\n");
     printf("Enjoy!!!\n\n");
     iface_listing();
 }
