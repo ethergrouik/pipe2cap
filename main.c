@@ -145,7 +145,7 @@ int main( int argc, char *argv[] ){
         exit( EXIT_FAILURE );
 
     pstProject->pIfaceName = NULL;
-    pstProject->iPcapLoopTimer = 10;
+    pstProject->iPcapLoopTimer = 1;
 
     if ( argc == 1 ){
         usage();
