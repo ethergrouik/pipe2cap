@@ -1,14 +1,14 @@
 # pipe2cap
-Forwards stdin network frames to a local adapter on Windows using winpcap.
+Transfers stdin network frames to a local adapter on Windows using winpcap.
 
 You will be able to:
 - use apps that cannot use stdin as a pcap capture source;
-- use as many apps as you want in the same time with only one remote network frame capture flow.
+- use as many apps as you want at the same time with only one remote network frame capture flow.
 
 ## How to:
 - Add a MS loopback adapter to your Windows box;
 - Disable all network properties of this new adapter;
-- Install winpcap again in order to add this new adapter to the pcap interfaces list;
+- Reinstall winpcap or reboot your computer in order to add this new adapter to the pcap interface list;
 - Start pipe2cap.exe without any argument to list adapters:
 
   Available interfaces:
@@ -22,7 +22,7 @@ You will be able to:
   plink.exe -ssh -pw password login@192.168.1.1 "tcpdump -n -s 0 -i eth0 -w - not port ssh" | *path_to_file*\pipe2cap.exe 1
 
   **=>** it will forward frames captured by tcpdump on 192.168.1.1 (except ssh) to your local MS loopback adapter identified by its id ( 1 ).
-- Start your favorites tools (ie: Wireshark, Ethergrouik, NetworkMiner...) and listen to your MS loopback adapter 
+- Start your favorite tools (ie: Wireshark, Ethergrouik, NetworkMiner...) and listen to your MS loopback adapter 
 
 ## How to add MS Loopback adapter:
 https://technet.microsoft.com/en-us/library/cc708322%28v=ws.10%29.aspx
