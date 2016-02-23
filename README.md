@@ -27,4 +27,10 @@ You will be able to:
 ## How to add MS Loopback adapter:
 https://technet.microsoft.com/en-us/library/cc708322%28v=ws.10%29.aspx
 
+## How to build the project:
+- Download and install [Codeblocks](http://www.codeblocks.org/downloads) (codeblocks-16.01mingw-setup.exe was used to realize this project);
+- Load the Codeblocks project file pipe2cap.cbp
+- Winpcap dependencies are already present in the project.
+ 
+
 Enjoy!!!
