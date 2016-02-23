@@ -1,5 +1,5 @@
 # pipe2cap
-Forwards stdin network frames to a local adapter on Windows using pcap.
+Forwards stdin network frames to a local adapter on Windows using winpcap.
 
 You will be able to:
 - use apps that cannot use stdin as a pcap capture source;
