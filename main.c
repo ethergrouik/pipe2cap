@@ -7,8 +7,7 @@ void usage( void ){
     printf( "Transfers remote sniffed frames to a local network adapter using pcap.\n\n" );
     printf( "How to:\n" );
     printf( "=======\n" );
-    printf( "For Windows Boxes:\n" );
-    printf( "------------------\n" );
+#ifdef __WIN32__
     printf( "- Add a MS loopback adapter to your Windows box ( let's image that its id will be '1' );\n" );
     printf( "- Disable all network properties of this new adapter;\n" );
     printf( "- Reinstall winpcap or reboot your computer in order to add this new adapter to the pcap interfaces list;\n" );
@@ -16,15 +15,14 @@ void usage( void ){
     printf( "plink.exe -ssh -pw password login@192.168.1.1 \"tcpdump -n -s 0 -i eth0 -w - not port ssh\" | c:\\users\\user\\Downloads\\pipe2cap.exe 1\n\n" );
     printf( "=> it will transfer frames captured by tcpdump on 192.168.1.1 (except ssh) to your local MS loopback adapter identified by its id ( 1 ).\n\n" );
     printf( "- Start your favorite tools and listen to your MS loopback adapter.\n\n" );
-    printf( "\nFor Linux Boxes:\n" );
-    printf( "----------------\n" );
+#else
     printf( "- Add a dummy iface: sudo modprobe dummy;\n" );
     printf( "- Start the iface: sudo ifconfig dummy0 up;\n" );
     printf( "- Connect to the remote linux box like this:\n\n" );
     printf( "sshpass -p password ssh login@192.168.1.1 \"tcpdump -n -s 0 -i eth0 -w - not port ssh\" | sudo ./pipe2cap 1\n\n" );
     printf( "=> it will transfer frames captured by tcpdump on 192.168.1.1 (except ssh) to your local adapter (dummy0) identified by its id ( 1 ).\n\n" );
     printf( "- Start your favorite tools and listen to dummy0.\n\n" );
-
+#endif // __WIN32__
     printf("Enjoy!!!\n\n");
     iface_listing();
 }
