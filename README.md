@@ -20,15 +20,15 @@ You will be able to:
 
 - Connect to your linux remote box like this:
 
-  plink.exe -ssh -pw password login@192.168.1.1 "tcpdump -n -s 0 -i eth0 -w - not port ssh" | *path_to_file*\pipe2cap.exe 1
+  ```plink.exe -ssh -pw password login@192.168.1.1 "tcpdump -n -s 0 -i eth0 -w - not port ssh" | *path_to_file*\pipe2cap.exe 1```
 
   **=>** it will forward frames captured by tcpdump on 192.168.1.1 (except ssh) to your local MS loopback adapter identified by its id ( 1 ).
 - Start your favorite tools (ie: Wireshark, Ethergrouik, NetworkMiner...) and listen to your MS loopback adapter 
 
 ### For Linux boxes:
-- Add a dummy iface: sudo modprobe dummy; (Thanks Max!)
-- Start the iface: sudo ifconfig dummy0 up;
-- Start pipe2cap without any argument to list adapters: sudo ./pipe2cap;
+- Add a dummy iface: ```sudo modprobe dummy```; (Thanks Max!)
+- Start the iface: ```sudo ifconfig dummy0 up```;
+- Start pipe2cap without any argument to list adapters: ```sudo ./pipe2cap```;
 
   Available interfaces:
   
@@ -60,7 +60,7 @@ You will be able to:
 
 - Connect to the remote linux box like this:
 
-  sshpass -p password ssh login@192.168.1.1 "tcpdump -n -s 0 -i eth0 -w - not port ssh" | sudo ./pipe2cap 1
+  ```sshpass -p password ssh login@192.168.1.1 "tcpdump -n -s 0 -i eth0 -w - not port ssh" | sudo ./pipe2cap 1```
   
   **=>** it will forward frames captured by tcpdump on 192.168.1.1 (except ssh) to your dummy0 iface identified by its id ( 1 ).
 
