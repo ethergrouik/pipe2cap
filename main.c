@@ -3,17 +3,28 @@
 void usage( void ){
 
     printf( "\nUsage: 'data_stream' | app network_adapter_id\n" );
-    printf( "=======\n");
-    printf( "Transfers remote sniffed frames to a local network adapter using pcap.\n\n");
-    printf("How to:\n");
-    printf("=======\n");
-    printf("- Add a MS loopback adapter to your Windows box ( let's image that its id will be '1' );\n");
-    printf("- Disable all network properties of this new adapter;\n");
-    printf("- Reinstall winpcap or reboot your computer in order to add this new adapter to the pcap interface list;\n");
-    printf("- Connect to your linux remote box like this:\n\n");
-    printf("plink.exe -ssh -pw password login@192.168.1.1 \"tcpdump -n -s 0 -i eth0 -w - not port ssh\" | c:\\users\\user\\Downloads\\pipe2cap.exe 1\n\n");
-    printf("=> it will forward frames captured by tcpdump on 192.168.1.1 (except ssh) to your local MS loopback adapter identified by its id ( 1 ).\n\n");
-    printf("- Start your favorite tools and listen to your MS loopback adapter.\n\n");
+    printf( "=======\n" );
+    printf( "Transfers remote sniffed frames to a local network adapter using pcap.\n\n" );
+    printf( "How to:\n" );
+    printf( "=======\n" );
+    printf( "For Windows Boxes:\n" );
+    printf( "------------------\n" );
+    printf( "- Add a MS loopback adapter to your Windows box ( let's image that its id will be '1' );\n" );
+    printf( "- Disable all network properties of this new adapter;\n" );
+    printf( "- Reinstall winpcap or reboot your computer in order to add this new adapter to the pcap interfaces list;\n" );
+    printf( "- Connect to your linux remote box like this:\n\n" );
+    printf( "plink.exe -ssh -pw password login@192.168.1.1 \"tcpdump -n -s 0 -i eth0 -w - not port ssh\" | c:\\users\\user\\Downloads\\pipe2cap.exe 1\n\n" );
+    printf( "=> it will transfer frames captured by tcpdump on 192.168.1.1 (except ssh) to your local MS loopback adapter identified by its id ( 1 ).\n\n" );
+    printf( "- Start your favorite tools and listen to your MS loopback adapter.\n\n" );
+    printf( "\nFor Linux Boxes:\n" );
+    printf( "----------------\n" );
+    printf( "- Add a dummy iface: sudo modprobe dummy;\n" );
+    printf( "- Start the iface: sudo ifconfig dummy0 up;\n" );
+    printf( "- Connect to the remote linux box like this:\n\n" );
+    printf( "sshpass -p password ssh login@192.168.1.1 \"tcpdump -n -s 0 -i eth0 -w - not port ssh\" | sudo ./pipe2cap 1\n\n" );
+    printf( "=> it will transfer frames captured by tcpdump on 192.168.1.1 (except ssh) to your local adapter (dummy0) identified by its id ( 1 ).\n\n" );
+    printf( "- Start your favorite tools and listen to dummy0.\n\n" );
+
     printf("Enjoy!!!\n\n");
     iface_listing();
 }
@@ -119,13 +130,36 @@ int main( int argc, char *argv[] ){
 	pcap_if_t *d;
     int iCpt = 0;
     char errbuf[ PCAP_ERRBUF_SIZE ];
-    unsigned char buf[ MAX_MTU ];
     int status = 0;
     int iFramesCpt = 0;
+    int iReturn = 0;
+
+#ifdef __WIN32__
 
     struct pcap_file_header stFileHeader;
+    unsigned char buf[ MAX_MTU ];
+    assert ( sizeof ( stFileHeader ) == 24 );
 
-    system("cls");
+#else
+
+    pcap_t *pcap_handle_offline_adapter;
+    char errbufoffline[ PCAP_ERRBUF_SIZE ];
+    struct pcap_pkthdr *header;
+    const unsigned char *pkt_data;
+    int res;
+
+#endif // __WIN32__
+
+
+#ifdef __WIN32__
+    iReturn = system( "cls" );
+#else
+    iReturn = system( "clear" );
+#endif // __WIN32__
+    if ( iReturn == -1 ){
+        exit( EXIT_FAILURE );
+    }
+
     printf( "\n%s %s ( %s )\n", APPNAME, VERSION, RELEASEDATE );
 
     for ( iCpt = 0 ; iCpt < ( strlen( APPNAME ) + strlen( VERSION ) + strlen( RELEASEDATE ) + 6 ) ; iCpt++ ){
@@ -134,7 +168,6 @@ int main( int argc, char *argv[] ){
     printf("\n");
     printf( "%s ( ethergrouik@gmail.com )\n\n", DEVNAME );
 
-    assert ( sizeof ( stFileHeader ) == 24 );
     assert ( sizeof ( unsigned int ) == 4 );
     assert ( sizeof ( unsigned short ) == 2 );
 
@@ -179,6 +212,8 @@ int main( int argc, char *argv[] ){
         exit( EXIT_FAILURE );
     }
 
+#ifdef __WIN32__
+
     if ( setmode( fileno( stdin ), O_BINARY ) == -1 ){
         printf( "Error: cannot setmode stdin to O_BINARY\n" );
         exit( EXIT_FAILURE );
@@ -209,6 +244,7 @@ int main( int argc, char *argv[] ){
                 }
 
                 read_stream( STDIN_FILENO, buf, stPktHeader.caplen );
+
                 //print_packet( buf, stPktHeader.caplen );
                 pcap_send( pstProject->pcap_handle_adapter, buf, stPktHeader.len );
             }
@@ -220,6 +256,32 @@ int main( int argc, char *argv[] ){
             printf( "W: caplen < 0\n" );
         }
     }
+#else
+
+    if( NULL == ( pcap_handle_offline_adapter = pcap_open_offline( "-", errbufoffline ) ) ){
+        printf( "Error: cannot pcap_open_offline!\n" );
+        exit( EXIT_FAILURE );
+    }
+
+    while( ( res = pcap_next_ex( pcap_handle_offline_adapter, &header, &pkt_data ) ) >= 0 ) {
+        if(res == 0)
+            continue;
+
+        if (pkt_data != NULL){
+
+            iFramesCpt++;
+            status = show_status( status, iFramesCpt );
+            if ( iFramesCpt == 0xffffffff - 5 ){
+                iFramesCpt = 0;
+                printf( "+%d\n", 0xffffffff-5 );
+            }
+
+            pcap_send( pstProject->pcap_handle_adapter, (unsigned char *)pkt_data, header->len );
+        }
+    }
+
+#endif // __WIN32__
+
     printf( "The End!!!\n" );
 
     return 0;
