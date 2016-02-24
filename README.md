@@ -75,6 +75,6 @@ https://technet.microsoft.com/en-us/library/cc708322%28v=ws.10%29.aspx
  
 ### On Linux boxes:
 - sudo apt-get install libpcap-dev
-- compile: gcc -o pipe2cap main.c -lpcap
+- compile: just type ```make``` or ```gcc -o pipe2cap main.c -lpcap```
 
 Enjoy!!!
