@@ -86,7 +86,7 @@ void iface_listing( void ){
 	pcap_if_t *alldevs;
 	pcap_if_t *d;
 
-	char errbuf[ PCAP_ERRBUF_SIZE+1 ];
+	char errbuf[ PCAP_ERRBUF_SIZE+1 ] = { 0 };
 
 	int iCpt = 0;
 
@@ -124,10 +124,10 @@ int pcap_send( pcap_t *fp, unsigned char *pkt, int iLength ){
 
 int main( int argc, char *argv[] ){
 
-	pcap_if_t *alldevs;
-	pcap_if_t *d;
+    pcap_if_t *alldevs;
+    pcap_if_t *d;
     int iCpt = 0;
-    char errbuf[ PCAP_ERRBUF_SIZE ];
+    char errbuf[ PCAP_ERRBUF_SIZE ] = { 0 };
     int status = 0;
     int iFramesCpt = 0;
     int iReturn = 0;
@@ -135,13 +135,13 @@ int main( int argc, char *argv[] ){
 #ifdef __WIN32__
 
     struct pcap_file_header stFileHeader;
-    unsigned char buf[ MAX_MTU ];
+    unsigned char buf[ MAX_MTU ] = { 0 };
     assert ( sizeof ( stFileHeader ) == 24 );
 
 #else
 
     pcap_t *pcap_handle_offline_adapter;
-    char errbufoffline[ PCAP_ERRBUF_SIZE ];
+    char errbufoffline[ PCAP_ERRBUF_SIZE ] = { 0 };
     struct pcap_pkthdr *header;
     const unsigned char *pkt_data;
     int res;
@@ -168,9 +168,6 @@ int main( int argc, char *argv[] ){
 
     assert ( sizeof ( unsigned int ) == 4 );
     assert ( sizeof ( unsigned short ) == 2 );
-
-    errbuf[ 0 ]='\0';
-    memset( &errbuf, 0, PCAP_ERRBUF_SIZE );
 
     if ( NULL == ( pstProject = ( stProject* )malloc( sizeof( stProject ) ) ) )
         exit( EXIT_FAILURE );
