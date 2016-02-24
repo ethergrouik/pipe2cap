@@ -26,7 +26,7 @@ You will be able to:
 - Start your favorite tools (ie: Wireshark, Ethergrouik, NetworkMiner...) and listen to your MS loopback adapter 
 
 ### For Linux boxes:
-- Add a dummy iface: sudo modprobe dummy;
+- Add a dummy iface: sudo modprobe dummy; (Thanks Max!)
 - Start the iface: sudo ifconfig dummy0 up;
 - Start pipe2cap without any argument to list adapters: sudo ./pipe2cap;
 
